@@ -1,5 +1,8 @@
 // Copyright © FunctionalKotlin.com 2017. All rights reserved.
 
+import Validators.IsValidName
+import Validators.IsValidPassword
+
 data class User(val name: String, val password: String)
 
 enum class UserError {
@@ -7,23 +10,29 @@ enum class UserError {
     PASSWORD_TOO_SHORT
 }
 
-fun validateName(name: String): Result<String, UserError> =
-    name.takeIf { name.isNotEmpty() && name.length <= 15 }
-        ?.let(::Success)
-        ?: Failure(UserError.USERNAME_OUT_OF_BOUNDS)
+typealias Validator<A, E> = (A) -> Result<A, E>
 
-fun validatePassword(password: String): Result<String, UserError> =
-    password.takeIf { password.length >= 10 }
-        ?.let(::Success)
-        ?: Failure(UserError.PASSWORD_TOO_SHORT)
+object Validators {
+    val IsValidName: Validator<String, UserError> = {
+        it.takeIf { it.isNotEmpty() && it.length <= 15 }
+            ?.let(::Success)
+            ?: Failure(UserError.USERNAME_OUT_OF_BOUNDS)
+    }
+
+    val IsValidPassword: Validator<String, UserError> = {
+        it.takeIf { it.length >= 10 }
+            ?.let(::Success)
+            ?: Failure(UserError.PASSWORD_TOO_SHORT)
+    }
+}
 
 fun createUser(name: String, password: String): Result<User, UserError> {
-    val validateName = validateName(name)
+    val validateName = IsValidName(name)
 
     if (validateName is Failure)
         return validateName
 
-    val validatePassword = validatePassword(password)
+    val validatePassword = IsValidPassword(password)
 
     if (validatePassword is Failure)
         return validatePassword

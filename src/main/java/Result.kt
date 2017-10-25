@@ -15,3 +15,14 @@ fun <A, E, B> Result<A, E>.map(transform: (A) -> B): Result<B, E> =
 fun <A> Result<A, *>.ifSuccess(continuation: (A) -> Unit) {
     if (this is Success) continuation(value)
 }
+
+operator infix fun <T, E>
+    Validator<T, E>.plus(validator: Validator<T, E>): Validator<T, E> = {
+
+    val result = this(it)
+
+    when (result) {
+        is Success -> validator(it)
+        is Failure -> result
+    }
+}

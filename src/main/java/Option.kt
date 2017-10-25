@@ -9,3 +9,7 @@ fun <A, B> Option<A>.map(transform: (A) -> B): Option<B> = when(this) {
     is Just -> Just(transform(this.value))
     is None -> None
 }
+
+fun <A> Option<A>.ifPresent(continuation: (A) -> Unit) {
+    if (this is Just) continuation(value)
+}

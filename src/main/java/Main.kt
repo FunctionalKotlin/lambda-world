@@ -15,8 +15,7 @@ fun createUser(name: String, password: String): Option<User> =
     ?: None
 
 fun main(args: Array<String>) {
-    val name = createUser("Antonio", "functionalrocks")
+    createUser("Antonio", "functionalrocks")
         .map { it.name }
-
-    println(name)
+        .ifPresent(::println)
 }

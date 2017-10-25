@@ -10,5 +10,5 @@ fun getUserById(id: Int): Option<User> = Just(User("alex", 1))
 
 fun main(args: Array<String>) {
     val option: Option<Organization> = getUserById(42)
-        .mapFlat { user -> getOrganizationById(user.organizationId) }
+        .flatMap { user -> getOrganizationById(user.organizationId) }
 }

@@ -9,6 +9,7 @@ fun getOrganizationById(id: Int): Option<Organization> = Just(Organization("Func
 fun getUserById(id: Int): Option<User> = Just(User("alex", 1))
 
 fun main(args: Array<String>) {
-    val option: Option<Option<Organization>> = getUserById(42)
+    val option: Option<Organization> = getUserById(42)
         .map { user -> getOrganizationById(user.organizationId) }
+        .flatten()
 }

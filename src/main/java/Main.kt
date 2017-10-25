@@ -8,12 +8,17 @@ fun validateName(name: String): Boolean =
 fun validatePassword(password: String): Boolean =
     password.length >= 10
 
-fun createUser(name: String, password: String): User? =
+fun createUser(name: String, password: String): Option<User> =
     User(name, password).takeIf {
         validateName(name) && validatePassword(password)
-    }
+    }?.let(::Just)
+    ?: None
 
 fun main(args: Array<String>) {
-    createUser("Antonio", "functionalrocks")
-        ?.let(::println)
+    val option = createUser("Antonio", "functionalrocks")
+
+    when(option) {
+        is Just -> println("We have a user: ${option.value}")
+        is None -> println("Something went wrong")
+    }
 }

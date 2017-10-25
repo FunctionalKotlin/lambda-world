@@ -15,10 +15,8 @@ fun createUser(name: String, password: String): Option<User> =
     ?: None
 
 fun main(args: Array<String>) {
-    val option = createUser("Antonio", "functionalrocks")
+    val name = createUser("Antonio", "functionalrocks")
+        .map { it.name }
 
-    when(option) {
-        is Just -> println("We have a user: ${option.value}")
-        is None -> println("Something went wrong")
-    }
+    println(name)
 }

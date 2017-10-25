@@ -14,7 +14,7 @@ fun <A> Option<A>.ifPresent(continuation: (A) -> Unit) {
     if (this is Just) continuation(value)
 }
 
-fun <A, B> Option<A>.mapAndFlatten(transform: (A) -> Option<B>): Option<B> {
+fun <A, B> Option<A>.mapFlatten(transform: (A) -> Option<B>): Option<B> {
     val option = map(transform)
 
     return when(option) {

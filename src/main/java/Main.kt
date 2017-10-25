@@ -29,7 +29,7 @@ object Validators {
 }
 
 fun createUser(name: String, password: String): Result<User, UserError> =
-    User(name, password).let(IsValidName + IsValidPassword)
+    User(name, password).let(allOf(IsValidName, IsValidPassword))
 
 fun main(args: Array<String>) {
     createUser("Antonio", "functionalrocks")

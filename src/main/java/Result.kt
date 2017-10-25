@@ -26,3 +26,6 @@ operator infix fun <T, E>
         is Failure -> result
     }
 }
+
+fun <A, E> allOf(vararg validators: Validator<A, E>): Validator<A, E> =
+    validators.reduce { acc, function -> acc + function }

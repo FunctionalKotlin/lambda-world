@@ -14,10 +14,11 @@ fun <A> Option<A>.ifPresent(continuation: (A) -> Unit) {
     if (this is Just) continuation(value)
 }
 
-fun <A> Option<Option<A>>.flatten(): Option<A> = when(this) {
-    is Just -> value
-    is None -> None
-}
+fun <A, B> Option<A>.mapAndFlatten(transform: (A) -> Option<B>): Option<B> {
+    val option = map(transform)
 
-fun <A, B> Option<A>.mapAndFlatten(transform: (A) -> Option<B>): Option<B> =
-    map(transform).flatten()
+    return when(option) {
+        is Just -> option.value
+        is None -> None
+    }
+}

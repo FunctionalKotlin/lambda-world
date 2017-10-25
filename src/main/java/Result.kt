@@ -28,4 +28,4 @@ operator infix fun <T, E>
 }
 
 fun <A, E> allOf(vararg validators: Validator<A, E>): Validator<A, E> =
-    validators.reduce { acc, function -> acc + function }
+    validators.fold(::Success) { acc, function -> acc + function }

@@ -26,5 +26,5 @@ fun createUser(name: String, password: String): Result<User, UserError> {
 fun main(args: Array<String>) {
     createUser("Antonio", "functionalrocks")
         .map { it.name }
-        .ifPresent(::println)
+        .ifSuccess(::println)
 }

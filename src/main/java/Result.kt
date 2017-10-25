@@ -11,3 +11,7 @@ fun <A, E, B> Result<A, E>.map(transform: (A) -> B): Result<B, E> =
         is Success -> Success(transform(this.value))
         is Failure -> this
     }
+
+fun <A> Result<A, *>.ifSuccess(continuation: (A) -> Unit) {
+    if (this is Success) continuation(value)
+}

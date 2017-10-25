@@ -3,11 +3,15 @@
 import Validators.IsValidName
 import Validators.IsValidPassword
 
-data class User(val name: String, val password: String)
+data class User(
+    val name: String, val password: String, val organizationId: Int)
+
+data class Organization(val name: String)
 
 enum class UserError {
     USERNAME_OUT_OF_BOUNDS,
-    PASSWORD_TOO_SHORT
+    PASSWORD_TOO_SHORT,
+    MISSING_ORGANIZATION
 }
 
 typealias Validator<A, E> = (A) -> Result<A, E>
@@ -28,11 +32,18 @@ object Validators {
             .orElseFail(with = UserError.PASSWORD_TOO_SHORT)
 }
 
-fun createUser(name: String, password: String): Result<User, UserError> =
-    User(name, password).let(allOf(IsValidName, IsValidPassword))
+fun getOrganization(id: Int): Result<Organization, UserError> =
+    Success(Organization("Lambda World"))
+
+fun createUser(
+    name: String, password: String, organizationId: Int):
+        Result<User, UserError> =
+
+    User(name, password, organizationId)
+        .let(allOf(IsValidName, IsValidPassword))
 
 fun main(args: Array<String>) {
-    createUser("Antonio", "functionalrocks")
-        .map { it.name }
+    createUser("Antonio", "functionalrocks", 1)
+        .map { getOrganization(it.organizationId) }
         .ifSuccess(::println)
 }

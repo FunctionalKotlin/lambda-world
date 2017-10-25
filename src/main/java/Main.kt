@@ -12,33 +12,24 @@ enum class UserError {
 
 typealias Validator<A, E> = (A) -> Result<A, E>
 
+fun <A> validate(with: (A) -> Boolean): (A) -> A? = { it.takeIf(with) }
+
+fun <A, E> ((A) -> A?).orElseFail(with: E): Validator<A, E> = {
+    this(it)?.let(::Success) ?: Failure(with)
+}
+
 object Validators {
-    val IsValidName: Validator<String, UserError> = {
-        it.takeIf { it.isNotEmpty() && it.length <= 15 }
-            ?.let(::Success)
-            ?: Failure(UserError.USERNAME_OUT_OF_BOUNDS)
-    }
+    val IsValidName: Validator<User, UserError> =
+        validate<User>(with = { it.name.isNotEmpty() && it.name.length < 15 })
+            .orElseFail(with = UserError.USERNAME_OUT_OF_BOUNDS)
 
-    val IsValidPassword: Validator<String, UserError> = {
-        it.takeIf { it.length >= 10 }
-            ?.let(::Success)
-            ?: Failure(UserError.PASSWORD_TOO_SHORT)
-    }
+    val IsValidPassword: Validator<User, UserError> =
+        validate<User>(with = { it.password.length >= 10 })
+            .orElseFail(with = UserError.PASSWORD_TOO_SHORT)
 }
 
-fun createUser(name: String, password: String): Result<User, UserError> {
-    val validateName = IsValidName(name)
-
-    if (validateName is Failure)
-        return validateName
-
-    val validatePassword = IsValidPassword(password)
-
-    if (validatePassword is Failure)
-        return validatePassword
-
-    return User(name, password).let(::Success)
-}
+fun createUser(name: String, password: String): Result<User, UserError> =
+    User(name, password).let(IsValidName + IsValidPassword)
 
 fun main(args: Array<String>) {
     createUser("Antonio", "functionalrocks")

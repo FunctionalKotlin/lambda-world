@@ -44,6 +44,6 @@ fun createUser(
 
 fun main(args: Array<String>) {
     createUser("Antonio", "functionalrocks", 1)
-        .map { getOrganization(it.organizationId) }
+        .flatMap { getOrganization(it.organizationId) }
         .ifSuccess(::println)
 }
